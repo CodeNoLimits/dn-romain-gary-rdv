@@ -42,7 +42,7 @@
     return ac;
   }
   function whoosh(up = true) {
-    if (!state.sound || !audio()) return;
+    if (!state.sound || !audio() || ac.state !== 'running') return;
     const t = ac.currentTime, src = ac.createBufferSource(), bp = ac.createBiquadFilter(), g = ac.createGain();
     src.buffer = noise; bp.type = 'bandpass'; bp.Q.value = 1.2;
     bp.frequency.setValueAtTime(up ? 380 : 2600, t); bp.frequency.exponentialRampToValueAtTime(up ? 2600 : 380, t + .42);
@@ -70,69 +70,61 @@
     en: { src: 'media/music_en.mp3', name: 'Music Square Blues' },
     he: { src: 'media/music_he.mp3', name: 'Monsieur Ajar' }
   };
-  let userMuted = store.get('muted', false), curTrack = null, fadeTok = 0, mGain = null;
+  /* Son ACTIVÉ par défaut à chaque ouverture (rien n'est mémorisé d'une visite à l'autre). */
+  let userMuted = false, playing = false, starting = false, curTrack = null, fadeTok = 0, mGain = null, armed = false;
+  state.sound = true;
   const getVol = () => (mGain ? mGain.gain.value : music.volume);
   const setVol = (v) => { v = Math.max(0, Math.min(1, v)); if (mGain) { mGain.gain.value = v; music.volume = 1; } else music.volume = v; };
   function wire() {
-    /* appelé seulement pendant un geste : passe la musique par WebAudio pour que le volume marche aussi sur iPhone */
+    /* pendant un geste : la musique passe par WebAudio, pour que le volume marche aussi sur iPhone */
     if (mGain || !audio()) return;
     try { const src = ac.createMediaElementSource(music); mGain = ac.createGain(); mGain.gain.value = music.volume; src.connect(mGain); mGain.connect(ac.destination); music.volume = 1; } catch (e) { mGain = null; }
-  }
-  function label() {
-    const tr = TRACKS[state.lang], np = $('#np');
-    np.innerHTML = `<span class="eq" aria-hidden="true"><i></i><i></i><i></i></span>♪ ${esc(tr.name)} · Suno`;
-    np.classList.toggle('off', !state.sound);
-  }
-  function loadTrack() {
-    const tr = TRACKS[state.lang];
-    if (curTrack === tr.src) return false;
-    curTrack = tr.src; music.src = tr.src; music.load(); return true;
-  }
-  function startMusic() {
-    loadTrack(); setVol(0);
-    const p = music.play();
-    const ok = () => { fade(music, .26, 1600); };
-    if (p && p.then) return p.then(() => { ok(); return true; }).catch(() => false);
-    ok(); return Promise.resolve(true);
-  }
-  function switchTrack() {
-    label();
-    if (!state.sound) { loadTrack(); return; }
-    const my = ++fadeTok;
-    fade(music, 0, 450, () => { if (my !== fadeTok) return; if (loadTrack()) startMusic(); else fade(music, .26, 600); });
-  }
-  function setSound(on, byUser) {
-    state.sound = on; store.set('sound', on);
-    if (byUser) { userMuted = !on; store.set('muted', userMuted); }
-    $('#snd').setAttribute('aria-pressed', String(on));
-    if (on) {
-      audio(); if (ac && ac.state === 'suspended') ac.resume(); wire();
-      startMusic().then((ok) => { if (!ok) { state.sound = false; $('#snd').setAttribute('aria-pressed', 'false'); label(); } });
-    } else { ++fadeTok; fade(music, 0, 500, () => music.pause()); }
-    label();
   }
   function fade(el, to, ms, done) {
     const from = getVol(), t0 = performance.now();
     const step = (now) => { const k = Math.min(1, (now - t0) / ms); setVol(from + (to - from) * k); k < 1 ? requestAnimationFrame(step) : done && done(); };
     requestAnimationFrame(step);
   }
-  /* lecture automatique : on essaie tout de suite ; si le navigateur refuse, au premier geste n'importe où */
-  function autoStart() {
-    if (userMuted || state.sound) return;
-    const arm = (e) => {
-      if (e && e.target && e.target.closest && e.target.closest('#snd')) return;
-      ['pointerdown', 'keydown', 'touchend'].forEach((ev) => document.removeEventListener(ev, arm, true));
-      if (!userMuted && !state.sound) setSound(true);
-    };
-    const wireOnce = () => { document.removeEventListener('pointerdown', wireOnce, true); if (state.sound) { const v = getVol(); audio(); if (ac && ac.state === 'suspended') ac.resume(); wire(); setVol(v); } };
-    document.addEventListener('pointerdown', wireOnce, true);
+  function ui() {
+    state.sound = !userMuted;
+    $('#snd').setAttribute('aria-pressed', String(!userMuted));
+    const tr = TRACKS[state.lang], np = $('#np');
+    np.innerHTML = `<span class="eq" aria-hidden="true"><i></i><i></i><i></i></span>♪ ${esc(tr.name)} · Suno`;
+    np.classList.toggle('off', !playing);
+  }
+  function loadTrack() {
+    const tr = TRACKS[state.lang];
+    if (curTrack === tr.src) return false;
+    curTrack = tr.src; music.src = tr.src; music.load(); return true;
+  }
+  function tryPlay(gesture) {
+    if (userMuted || playing || starting) return Promise.resolve(playing);
+    starting = true;
+    if (gesture) { audio(); if (ac && ac.state === 'suspended') ac.resume(); wire(); }
     loadTrack(); setVol(0);
     const p = music.play();
-    if (p && p.then) p.then(() => { state.sound = true; $('#snd').setAttribute('aria-pressed', 'true'); fade(music, .26, 1600); label(); })
-      .catch(() => { ['pointerdown', 'keydown', 'touchend'].forEach((ev) => document.addEventListener(ev, arm, true)); });
+    const done = (ok) => { starting = false; if (ok) { playing = true; fade(music, .26, 1600); } ui(); return ok; };
+    return (p && p.then) ? p.then(() => done(true)).catch(() => done(false)) : Promise.resolve(done(true));
   }
-  $('#snd').addEventListener('click', () => { setSound(!state.sound, true); if (state.sound) pop(); });
-
+  function stopMusic() { playing = false; ++fadeTok; fade(music, 0, 500, () => music.pause()); ui(); }
+  function switchTrack() {
+    ui();
+    if (!playing) { loadTrack(); return; }
+    const my = ++fadeTok;
+    fade(music, 0, 450, () => { if (my !== fadeTok) return; if (loadTrack()) { playing = false; tryPlay(false); } else fade(music, .26, 600); });
+  }
+  /* le navigateur bloque le son avant le premier geste : on démarre au premier toucher / clic / touche, n'importe où */
+  const GESTURES = ['pointerdown', 'pointerup', 'touchend', 'click', 'keydown'];
+  function onGesture(e) {
+    if (e && e.target && e.target.closest && e.target.closest('#snd')) return;
+    if (playing) { audio(); if (ac && ac.state === 'suspended') ac.resume(); const v = getVol(); wire(); setVol(v); disarm(); return; }
+    if (userMuted) return;
+    tryPlay(true).then((ok) => { if (ok) disarm(); });
+  }
+  function arm() { if (armed) return; armed = true; GESTURES.forEach((ev) => document.addEventListener(ev, onGesture, true)); }
+  function disarm() { armed = false; GESTURES.forEach((ev) => document.removeEventListener(ev, onGesture, true)); }
+  function autoStart() { ui(); arm(); tryPlay(false); }
+  $('#snd').addEventListener('click', () => { if (userMuted || !playing) { userMuted = false; tryPlay(true).then((ok) => { if (ok) { disarm(); pop(); } }); } else { userMuted = true; stopMusic(); } ui(); });
   /* ---------------- rendu des scènes ---------------- */
   const R = {
     cover(t) { reset(); return `<div class="inner">
@@ -255,7 +247,7 @@
 
   /* ---------------- interactions ---------------- */
   function bind() {
-    const st = $('#start'); if (st) st.addEventListener('click', () => { if (!state.sound) setSound(true, true); setTimeout(() => go(1), 250); });
+    const st = $('#start'); if (st) st.addEventListener('click', () => { if (!playing && !userMuted) tryPlay(true); setTimeout(() => go(1), 250); });
     $$('.flip').forEach((f) => f.addEventListener('click', () => { const o = f.classList.toggle('open'); f.setAttribute('aria-expanded', String(o)); o ? tick() : untick(); }));
     $$('.opt').forEach((b) => b.addEventListener('click', () => {
       state.opt = +b.dataset.opt; store.set('opt', state.opt);
@@ -346,5 +338,5 @@
   const h = location.hash.slice(1), hi = scenes.findIndex((s) => s.id === h);
   if (hi > 0) { state.cur = hi; story.style.scrollBehavior = 'auto'; story.scrollTop = scenes[hi].offsetTop; requestAnimationFrame(() => { story.style.scrollBehavior = ''; }); }
   activate(state.cur, true);
-  label(); autoStart();
+  autoStart();
 })();
