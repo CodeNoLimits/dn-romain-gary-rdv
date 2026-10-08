@@ -318,3 +318,34 @@ html[lang="he"] .opt .badge { letter-spacing: 0; font-size: 12.5px; }
 .np.off .eq i { animation: none; height: 3px; }
 @keyframes eq { 0%, 100% { height: 3px; } 50% { height: 11px; } }
 @media (max-width: 420px) { .np { max-width: 92px; } }
+
+/* calculateur expliqué */
+.calc-wrap { max-width: 860px; }
+#calc .res { grid-template-columns: 1fr 1fr; max-width: 860px; margin-bottom: 10px; }
+#calc .res .card { position: relative; }
+.plates { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.plates .pl { width: 16px; height: 16px; border-radius: 50%; background: radial-gradient(circle, #fff7e6 30%, var(--gold) 34%, var(--gold) 46%, #fff7e6 50%, #e9dcc3 70%); box-shadow: 0 1px 3px rgba(0,0,0,.4); }
+.why { list-style: none; counter-reset: w; margin: 0 0 12px; padding: 0; display: grid; gap: 6px; max-width: 860px; }
+.why li { counter-increment: w; position: relative; padding: 8px 12px; padding-inline-start: 40px; border-radius: 12px; background: var(--glass); border: 1px solid var(--line); font-size: 15px; line-height: 1.4; }
+.why li::before { content: counter(w); position: absolute; inset-inline-start: 10px; top: 8px; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 700; background: rgba(212,174,99,.18); color: var(--gold-2); }
+.why li.gain { border-color: var(--gold); background: rgba(212,174,99,.14); font-weight: 600; }
+.why li.gain::before { content: '✓'; background: var(--gold); color: #1a120a; }
+.why .fx { display: inline-block; font-weight: 700; color: var(--gold-2); font-variant-numeric: tabular-nums; unicode-bidi: isolate; }
+#calc .sliders { max-width: 860px; }
+@media (max-width: 760px) {
+  #calc h2 { font-size: 28px; }
+  #calc .res .num { font-size: 40px; }
+  .why li { font-size: 13.5px; padding: 6px 10px; padding-inline-start: 36px; }
+  .why li::before { width: 20px; height: 20px; top: 6px; }
+  #calc .sliders { gap: 6px; padding: 10px 12px; }
+  #calc .sl label { font-size: 12.5px; }
+  input[type="range"] { height: 24px; }
+  .plates .pl { width: 13px; height: 13px; }
+}
+
+@media (max-width: 760px) {
+  #calc .note { font-size: 12px; margin-top: 6px; }
+  #calc .why { margin-bottom: 8px; gap: 5px; }
+  #calc .res { margin-bottom: 8px; }
+  #calc .res .card { padding: 8px 12px; }
+}

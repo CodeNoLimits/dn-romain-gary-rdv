@@ -14,9 +14,9 @@
   const qsLang = new URLSearchParams(location.search).get('lang');
   const state = {
     lang: ['fr', 'en', 'he'].includes(qsLang) ? qsLang : store.get('lang', 'fr'),
-    opt: Math.min(1, Math.max(0, +store.get('opt', 0) || 0)),
-    needs: store.get('needs', [false, false, false, false, false, false]),
-    calc: store.get('calc', { ticket: 135, margin: 60, nights: 26 }),
+    opt: 0,
+    needs: [false, false, false, false, false, false],
+    calc: { ticket: 135, margin: 60, nights: 26 },
     sound: false,
     cur: 0
   };
@@ -183,14 +183,14 @@
     calc(t) { reset(); const c = state.calc;
       return `<div class="inner"><div class="tag r" style="--d:0">${esc(t.calc.tag)}</div>
       <h2>${words(t.calc.title)}</h2>
-      <div class="calc r" style="--d:300"><div class="sliders">
+      <div class="res r" style="--d:260"><div class="card"><div class="num" id="r-night">0</div><div class="lab">${esc(t.calc.perNight)}</div><div class="plates" id="r-plates" aria-hidden="true"></div></div>
+        <div class="card"><div class="num" id="r-month">0</div><div class="lab">${esc(t.calc.perMonth)}</div></div></div>
+      <ol class="why r" style="--d:380"><li id="w1"></li><li id="w2"></li><li id="w3"></li><li id="w4" class="gain"></li></ol>
+      <div class="sliders r" style="--d:500">
         <div class="sl"><label for="c-ticket"><span>${esc(t.calc.ticket)}</span><output id="o-ticket"></output></label><input id="c-ticket" type="range" min="70" max="250" step="5" value="${c.ticket}"></div>
         <div class="sl"><label for="c-margin"><span>${esc(t.calc.margin)}</span><output id="o-margin"></output></label><input id="c-margin" type="range" min="25" max="75" step="1" value="${c.margin}"></div>
-        <div class="sl"><label for="c-nights"><span>${esc(t.calc.nights)}</span><output id="o-nights"></output></label><input id="c-nights" type="range" min="8" max="30" step="1" value="${c.nights}"></div>
-        <p class="inv">${t.calc.invest}</p></div>
-        <div class="res"><div class="card"><div class="num" id="r-month">0</div><div class="lab">${esc(t.calc.perMonth)}</div></div>
-        <div class="card"><div class="num" id="r-night">0</div><div class="lab">${esc(t.calc.perNight)}</div></div></div></div>
-      <p class="note r" style="--d:600">${esc(t.calc.note)}</p></div>`; },
+        <div class="sl"><label for="c-nights"><span>${esc(t.calc.nights)}</span><output id="o-nights"></output></label><input id="c-nights" type="range" min="8" max="30" step="1" value="${c.nights}"></div></div>
+      <p class="note r" style="--d:620">${esc(t.calc.note)}</p></div>`; },
     offer(t) { reset(); return `<div class="inner"><div class="tag r" style="--d:0">${esc(t.offer.tag)}</div>
       <h2>${words(t.offer.title)}</h2>
       <div class="offer"><ul class="list checks">${t.offer.items.map((x) => `<li ${r(80)}><span class="n"></span><span>${esc(x)}</span></li>`).join('')}</ul>
@@ -270,9 +270,17 @@
   let lastTick = 0;
   function calc(sound) {
     const c = state.calc, t = $('#r-month'); if (!t) return;
-    const perCover = c.ticket * c.margin / 100, month = 6000 / perCover, night = month / c.nights;
+    const L = T[state.lang].calc, inv = 6000;
+    const perCover = c.ticket * c.margin / 100, month = Math.ceil(inv / perCover), night = month / c.nights;
     $('#o-ticket').textContent = ils(c.ticket); $('#o-margin').textContent = c.margin + ' %'; $('#o-nights').textContent = nf(c.nights);
-    t.textContent = nf(Math.ceil(month)); $('#r-night').textContent = nf1(night);
+    t.textContent = nf(month); $('#r-night').textContent = nf1(night);
+    const plates = Math.min(12, Math.ceil(night));
+    $('#r-plates').innerHTML = '<span class="pl"></span>'.repeat(plates);
+    const fill = (s) => s.replace(/\{inv\}/g, ils(inv)).replace(/\{per\}/g, ils(Math.round(perCover))).replace(/\{ticket\}/g, ils(c.ticket))
+      .replace(/\{margin\}/g, c.margin + ' %').replace(/\{month\}/g, nf(month)).replace(/\{night\}/g, nf1(night)).replace(/\{nights\}/g, nf(c.nights));
+    $('#w1').innerHTML = fill(L.s1); $('#w2').innerHTML = fill(L.s2);
+    $('#w3').innerHTML = `<span class="fx" dir="ltr">${ils(inv)} ÷ ${ils(Math.round(perCover))} = ${nf(month)}</span> ` + fill(L.s3);
+    $('#w4').innerHTML = fill(L.s4);
     [['ticket', 70, 250], ['margin', 25, 75], ['nights', 8, 30]].forEach(([k, a, b]) => { const el = $('#c-' + k); el.style.setProperty('--p', ((c[k] - a) / (b - a) * 100) + '%'); });
     const now = performance.now(); if (sound && now - lastTick > 70) { lastTick = now; tone(500 + night * 60, .04, .03, 0, 'sine'); }
   }

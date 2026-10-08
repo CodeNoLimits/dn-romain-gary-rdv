@@ -105,14 +105,17 @@ window.T = {
     },
     calc: {
       tag: 'Le calcul',
-      title: 'Combien de couverts pour rentrer dans vos frais ?',
-      ticket: 'Ticket moyen par personne (hors TVA)',
-      margin: 'Ce qui vous reste après la matière première',
+      title: 'Combien de clients en plus pour être rentable ?',
+      ticket: 'Ce qu\'un client dépense en moyenne (hors TVA)',
+      margin: 'Ce qu\'il vous reste après la matière première',
       nights: 'Soirs ouverts par mois',
-      invest: 'Investissement mensuel : 3 000 ₪ (DreamNova) + 3 000 ₪ (pub) = <b>6 000 ₪</b>',
-      perMonth: 'couverts de plus par mois',
-      perNight: 'couverts de plus par soir',
-      note: 'Un calcul pour vous, pas une promesse. Mettez-y vos vrais chiffres.'
+      perNight: 'clients en plus par soir',
+      perMonth: 'clients en plus par mois',
+      s1: 'Vous investissez <b>{inv}</b> par mois (3 000 DreamNova + 3 000 pub).',
+      s2: 'Chaque client en plus vous laisse <b>{per}</b> ({ticket} × {margin}).',
+      s3: '<b>clients en plus par mois</b> remboursent tout, soit environ <b>{night} par soir</b> sur {nights} soirs.',
+      s4: 'Au-delà, chaque client en plus est du bénéfice.',
+      note: 'Un calcul pour vous, pas une promesse. Bougez les curseurs avec vos vrais chiffres.'
     },
     offer: {
       tag: 'L\'offre',
@@ -289,14 +292,17 @@ window.T = {
     },
     calc: {
       tag: 'The math',
-      title: 'How many covers to cover the investment?',
-      ticket: 'Average spend per guest (before VAT)',
+      title: 'How many extra guests to break even?',
+      ticket: 'What a guest spends on average (before VAT)',
       margin: 'What you keep after ingredients',
       nights: 'Evenings open per month',
-      invest: 'Monthly investment: ₪3,000 (DreamNova) + ₪3,000 (ads) = <b>₪6,000</b>',
-      perMonth: 'extra covers a month',
-      perNight: 'extra covers a night',
-      note: 'A calculation for you, not a promise. Plug in your real numbers.'
+      perNight: 'extra guests a night',
+      perMonth: 'extra guests a month',
+      s1: 'You invest <b>{inv}</b> a month (3,000 DreamNova + 3,000 ads).',
+      s2: 'Each extra guest leaves you <b>{per}</b> ({ticket} × {margin}).',
+      s3: '<b>extra guests a month</b> pay it all back, about <b>{night} a night</b> over {nights} evenings.',
+      s4: 'Beyond that, every extra guest is profit.',
+      note: 'A calculation for you, not a promise. Move the sliders with your real numbers.'
     },
     offer: {
       tag: 'The offer',
@@ -473,14 +479,17 @@ window.T = {
     },
     calc: {
       tag: 'החישוב',
-      title: 'כמה סועדים צריך כדי לכסות את ההשקעה?',
-      ticket: 'ממוצע לסועד (לפני מע״מ)',
-      margin: 'מה שנשאר לך אחרי חומרי הגלם',
+      title: 'כמה סועדים נוספים צריך כדי להיות ברווח?',
+      ticket: 'כמה סועד מוציא בממוצע (לפני מע״מ)',
+      margin: 'כמה נשאר לך אחרי חומרי הגלם',
       nights: 'ערבים פתוחים בחודש',
-      invest: 'השקעה חודשית: 3,000 ₪ (DreamNova) + 3,000 ₪ (פרסום) = <b>6,000 ₪</b>',
-      perMonth: 'סועדים נוספים בחודש',
       perNight: 'סועדים נוספים בערב',
-      note: 'חישוב בשבילך, לא הבטחה. שים בו את המספרים האמיתיים שלך.'
+      perMonth: 'סועדים נוספים בחודש',
+      s1: 'אתה משקיע <b>{inv}</b> בחודש (3,000 ל-DreamNova ו-3,000 לפרסום).',
+      s2: 'כל סועד נוסף משאיר לך <b>{per}</b> ({ticket} × {margin}).',
+      s3: '<b>סועדים נוספים בחודש</b> מחזירים את הכול, בערך <b>{night} בכל ערב</b> לאורך {nights} ערבים.',
+      s4: 'מעבר לזה, כל סועד נוסף הוא רווח.',
+      note: 'חישוב בשבילך, לא הבטחה. הזז את המחוונים עם המספרים האמיתיים שלך.'
     },
     offer: {
       tag: 'ההצעה',
