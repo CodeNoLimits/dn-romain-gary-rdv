@@ -105,7 +105,7 @@ window.T = {
     },
     calc: {
       tag: 'Le calcul',
-      title: 'Combien de clients en plus pour être rentable ?',
+      title: 'Combien de clients en plus pour rembourser l\'investissement ?',
       ticket: 'Ce qu\'un client dépense en moyenne (hors TVA)',
       margin: 'Ce qu\'il vous reste après la matière première',
       nights: 'Soirs ouverts par mois',
@@ -114,7 +114,7 @@ window.T = {
       s1: 'Vous investissez <b>{inv}</b> par mois (3 000 DreamNova + 3 000 pub).',
       s2: 'Chaque client en plus vous laisse <b>{per}</b> ({ticket} × {margin}).',
       s3: '<b>clients en plus par mois</b> remboursent tout, soit environ <b>{night} par soir</b> sur {nights} soirs.',
-      s4: 'Au-delà, chaque client en plus est du bénéfice.',
+      s4: 'Au-delà, chaque client en plus vous laisse sa marge (après la matière première, avant vos autres frais).',
       note: 'Un calcul pour vous, pas une promesse. Bougez les curseurs avec vos vrais chiffres.'
     },
     offer: {
@@ -180,7 +180,7 @@ window.T = {
         ['Lun 12/10', 'Tournage 15:00–16:30'],
         ['Mar 13/10', 'Fiche Google, Google en ligne'],
         ['Mer 14/10', 'Pub Meta en ligne, Reel n° 1'],
-        ['Jeu 15/10', 'Ouverture de la prévente (artiste confirmé)'],
+        ['Jeu 15/10', 'Ouverture de la prévente (après confirmation de l\'artiste)'],
         ['Dim 18/10', 'Validation du contenu à 11:00, première note']
       ],
       thanks: 'Merci Uzi. On remplit ces soirées ensemble.'
@@ -292,7 +292,7 @@ window.T = {
     },
     calc: {
       tag: 'The math',
-      title: 'How many extra guests to break even?',
+      title: 'How many extra guests to pay back the investment?',
       ticket: 'What a guest spends on average (before VAT)',
       margin: 'What you keep after ingredients',
       nights: 'Evenings open per month',
@@ -301,7 +301,7 @@ window.T = {
       s1: 'You invest <b>{inv}</b> a month (3,000 DreamNova + 3,000 ads).',
       s2: 'Each extra guest leaves you <b>{per}</b> ({ticket} × {margin}).',
       s3: '<b>extra guests a month</b> pay it all back, about <b>{night} a night</b> over {nights} evenings.',
-      s4: 'Beyond that, every extra guest is profit.',
+      s4: 'Beyond that, each extra guest adds its margin (after ingredients, before your other costs).',
       note: 'A calculation for you, not a promise. Move the sliders with your real numbers.'
     },
     offer: {
@@ -367,7 +367,7 @@ window.T = {
         ['Mon 12 Oct', 'Filming 15:00–16:30'],
         ['Tue 13 Oct', 'Google profile, Google ads live'],
         ['Wed 14 Oct', 'Meta ads live, Reel #1'],
-        ['Thu 15 Oct', 'Presale opens (artist confirmed)'],
+        ['Thu 15 Oct', 'Presale opens (once the artist confirms)'],
         ['Sun 18 Oct', 'Content approval at 11:00, first note']
       ],
       thanks: 'Thank you, Uzi. Let\'s fill these evenings together.'
@@ -479,7 +479,7 @@ window.T = {
     },
     calc: {
       tag: 'החישוב',
-      title: 'כמה סועדים נוספים צריך כדי להיות ברווח?',
+      title: 'כמה סועדים נוספים צריך כדי להחזיר את ההשקעה?',
       ticket: 'כמה סועד מוציא בממוצע (לפני מע״מ)',
       margin: 'כמה נשאר לך אחרי חומרי הגלם',
       nights: 'ערבים פתוחים בחודש',
@@ -488,7 +488,7 @@ window.T = {
       s1: 'אתה משקיע <b>{inv}</b> בחודש (3,000 ל-DreamNova ו-3,000 לפרסום).',
       s2: 'כל סועד נוסף משאיר לך <b>{per}</b> ({ticket} × {margin}).',
       s3: '<b>סועדים נוספים בחודש</b> מחזירים את הכול, בערך <b>{night} בכל ערב</b> לאורך {nights} ערבים.',
-      s4: 'מעבר לזה, כל סועד נוסף הוא רווח.',
+      s4: 'מעבר לזה, כל סועד נוסף משאיר לך את המרווח שלו (אחרי חומרי הגלם, לפני הוצאות אחרות).',
       note: 'חישוב בשבילך, לא הבטחה. הזז את המחוונים עם המספרים האמיתיים שלך.'
     },
     offer: {

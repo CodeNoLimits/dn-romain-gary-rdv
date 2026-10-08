@@ -24,6 +24,8 @@
   const nf = (n) => new Intl.NumberFormat(LOC[state.lang], { maximumFractionDigits: 0 }).format(n);
   const nf1 = (n) => new Intl.NumberFormat(LOC[state.lang], { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(n);
   const ils = (n) => state.lang === 'en' ? '₪' + nf(n) : nf(n) + ' ₪';
+  const nf2 = (n) => new Intl.NumberFormat(LOC[state.lang], { minimumFractionDigits: Number.isInteger(n) ? 0 : 2, maximumFractionDigits: 2 }).format(n);
+  const ils2 = (n) => state.lang === 'en' ? '₪' + nf2(n) : nf2(n) + ' ₪';
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
   /* titre découpé en mots qui « pop » comme des sous-titres de reel */
@@ -276,10 +278,11 @@
     t.textContent = nf(month); $('#r-night').textContent = nf1(night);
     const plates = Math.min(12, Math.ceil(night));
     $('#r-plates').innerHTML = '<span class="pl"></span>'.repeat(plates);
-    const fill = (s) => s.replace(/\{inv\}/g, ils(inv)).replace(/\{per\}/g, ils(Math.round(perCover))).replace(/\{ticket\}/g, ils(c.ticket))
+    const perTxt = ils2(perCover);
+    const fill = (s) => s.replace(/\{inv\}/g, ils(inv)).replace(/\{per\}/g, perTxt).replace(/\{ticket\}/g, ils(c.ticket))
       .replace(/\{margin\}/g, c.margin + ' %').replace(/\{month\}/g, nf(month)).replace(/\{night\}/g, nf1(night)).replace(/\{nights\}/g, nf(c.nights));
     $('#w1').innerHTML = fill(L.s1); $('#w2').innerHTML = fill(L.s2);
-    $('#w3').innerHTML = `<span class="fx" dir="ltr">${ils(inv)} ÷ ${ils(Math.round(perCover))} = ${nf(month)}</span> ` + fill(L.s3);
+    $('#w3').innerHTML = `<span class="fx" dir="ltr">${ils(inv)} ÷ ${perTxt} = ${nf(month)}</span> ` + fill(L.s3);
     $('#w4').innerHTML = fill(L.s4);
     [['ticket', 70, 250], ['margin', 25, 75], ['nights', 8, 30]].forEach(([k, a, b]) => { const el = $('#c-' + k); el.style.setProperty('--p', ((c[k] - a) / (b - a) * 100) + '%'); });
     const now = performance.now(); if (sound && now - lastTick > 70) { lastTick = now; tone(500 + night * 60, .04, .03, 0, 'sine'); }
