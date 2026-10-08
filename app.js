@@ -14,7 +14,7 @@
   const qsLang = new URLSearchParams(location.search).get('lang');
   const state = {
     lang: ['fr', 'en', 'he'].includes(qsLang) ? qsLang : store.get('lang', 'fr'),
-    opt: store.get('opt', 0),
+    opt: Math.min(1, Math.max(0, +store.get('opt', 0) || 0)),
     needs: store.get('needs', [false, false, false, false, false, false]),
     calc: store.get('calc', { ticket: 135, margin: 60, nights: 26 }),
     sound: false,
@@ -65,21 +65,73 @@
     const t = ac.currentTime; [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => tone(f, 1.4, .07, t + i * .09, 'sine'));
   }
   const music = $('#music');
-  function setSound(on) {
+  const TRACKS = {
+    fr: { src: 'media/music_fr.mp3', name: 'Monsieur Ajar' },
+    en: { src: 'media/music_en.mp3', name: 'Music Square Blues' },
+    he: { src: 'media/music_he.mp3', name: 'Monsieur Ajar' }
+  };
+  let userMuted = store.get('muted', false), curTrack = null, fadeTok = 0, mGain = null;
+  const getVol = () => (mGain ? mGain.gain.value : music.volume);
+  const setVol = (v) => { v = Math.max(0, Math.min(1, v)); if (mGain) { mGain.gain.value = v; music.volume = 1; } else music.volume = v; };
+  function wire() {
+    /* appelé seulement pendant un geste : passe la musique par WebAudio pour que le volume marche aussi sur iPhone */
+    if (mGain || !audio()) return;
+    try { const src = ac.createMediaElementSource(music); mGain = ac.createGain(); mGain.gain.value = music.volume; src.connect(mGain); mGain.connect(ac.destination); music.volume = 1; } catch (e) { mGain = null; }
+  }
+  function label() {
+    const tr = TRACKS[state.lang], np = $('#np');
+    np.innerHTML = `<span class="eq" aria-hidden="true"><i></i><i></i><i></i></span>♪ ${esc(tr.name)} · Suno`;
+    np.classList.toggle('off', !state.sound);
+  }
+  function loadTrack() {
+    const tr = TRACKS[state.lang];
+    if (curTrack === tr.src) return false;
+    curTrack = tr.src; music.src = tr.src; music.load(); return true;
+  }
+  function startMusic() {
+    loadTrack(); setVol(0);
+    const p = music.play();
+    const ok = () => { fade(music, .26, 1600); };
+    if (p && p.then) return p.then(() => { ok(); return true; }).catch(() => false);
+    ok(); return Promise.resolve(true);
+  }
+  function switchTrack() {
+    label();
+    if (!state.sound) { loadTrack(); return; }
+    const my = ++fadeTok;
+    fade(music, 0, 450, () => { if (my !== fadeTok) return; if (loadTrack()) startMusic(); else fade(music, .26, 600); });
+  }
+  function setSound(on, byUser) {
     state.sound = on; store.set('sound', on);
+    if (byUser) { userMuted = !on; store.set('muted', userMuted); }
     $('#snd').setAttribute('aria-pressed', String(on));
     if (on) {
-      audio(); if (ac && ac.state === 'suspended') ac.resume();
-      music.volume = 0; const p = music.play(); if (p && p.catch) p.catch(() => {});
-      fade(music, .26, 1600);
-    } else { fade(music, 0, 500, () => music.pause()); }
+      audio(); if (ac && ac.state === 'suspended') ac.resume(); wire();
+      startMusic().then((ok) => { if (!ok) { state.sound = false; $('#snd').setAttribute('aria-pressed', 'false'); label(); } });
+    } else { ++fadeTok; fade(music, 0, 500, () => music.pause()); }
+    label();
   }
   function fade(el, to, ms, done) {
-    const from = el.volume, t0 = performance.now();
-    const step = (now) => { const k = Math.min(1, (now - t0) / ms); el.volume = from + (to - from) * k; k < 1 ? requestAnimationFrame(step) : done && done(); };
+    const from = getVol(), t0 = performance.now();
+    const step = (now) => { const k = Math.min(1, (now - t0) / ms); setVol(from + (to - from) * k); k < 1 ? requestAnimationFrame(step) : done && done(); };
     requestAnimationFrame(step);
   }
-  $('#snd').addEventListener('click', () => { setSound(!state.sound); if (state.sound) pop(); });
+  /* lecture automatique : on essaie tout de suite ; si le navigateur refuse, au premier geste n'importe où */
+  function autoStart() {
+    if (userMuted || state.sound) return;
+    const arm = (e) => {
+      if (e && e.target && e.target.closest && e.target.closest('#snd')) return;
+      ['pointerdown', 'keydown', 'touchend'].forEach((ev) => document.removeEventListener(ev, arm, true));
+      if (!userMuted && !state.sound) setSound(true);
+    };
+    const wireOnce = () => { document.removeEventListener('pointerdown', wireOnce, true); if (state.sound) { const v = getVol(); audio(); if (ac && ac.state === 'suspended') ac.resume(); wire(); setVol(v); } };
+    document.addEventListener('pointerdown', wireOnce, true);
+    loadTrack(); setVol(0);
+    const p = music.play();
+    if (p && p.then) p.then(() => { state.sound = true; $('#snd').setAttribute('aria-pressed', 'true'); fade(music, .26, 1600); label(); })
+      .catch(() => { ['pointerdown', 'keydown', 'touchend'].forEach((ev) => document.addEventListener(ev, arm, true)); });
+  }
+  $('#snd').addEventListener('click', () => { setSound(!state.sound, true); if (state.sound) pop(); });
 
   /* ---------------- rendu des scènes ---------------- */
   const R = {
@@ -203,7 +255,7 @@
 
   /* ---------------- interactions ---------------- */
   function bind() {
-    const st = $('#start'); if (st) st.addEventListener('click', () => { setSound(true); setTimeout(() => go(1), 250); });
+    const st = $('#start'); if (st) st.addEventListener('click', () => { if (!state.sound) setSound(true, true); setTimeout(() => go(1), 250); });
     $$('.flip').forEach((f) => f.addEventListener('click', () => { const o = f.classList.toggle('open'); f.setAttribute('aria-expanded', String(o)); o ? tick() : untick(); }));
     $$('.opt').forEach((b) => b.addEventListener('click', () => {
       state.opt = +b.dataset.opt; store.set('opt', state.opt);
@@ -274,7 +326,7 @@
     if (['ArrowDown', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); go(state.cur + 1); }
     if (['ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); go(state.cur - 1); }
   });
-  $$('#langs button').forEach((b) => b.addEventListener('click', () => { state.lang = b.dataset.lang; store.set('lang', state.lang); pop(); render(); }));
+  $$('#langs button').forEach((b) => b.addEventListener('click', () => { if (state.lang === b.dataset.lang) return; state.lang = b.dataset.lang; store.set('lang', state.lang); pop(); render(); switchTrack(); }));
 
   /* ---------------- confettis ---------------- */
   function confetti() {
@@ -294,4 +346,5 @@
   const h = location.hash.slice(1), hi = scenes.findIndex((s) => s.id === h);
   if (hi > 0) { state.cur = hi; story.style.scrollBehavior = 'auto'; story.scrollTop = scenes[hi].offsetTop; requestAnimationFrame(() => { story.style.scrollBehavior = ''; }); }
   activate(state.cur, true);
+  label(); autoStart();
 })();

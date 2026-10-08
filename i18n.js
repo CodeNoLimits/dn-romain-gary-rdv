@@ -134,9 +134,8 @@ window.T = {
       title: 'Comment voulez-vous démarrer ?',
       rec: 'Recommandé',
       opts: [
-        ['Démarrage complet', '3 000 ₪ / mois', 'Payé d\'avance. Virement d\'ici dimanche 11/10, puis le 12 de chaque mois.'],
-        ['En deux fois', '1 500 + 1 500 ₪', '1 500 ₪ ce soir ou dimanche matin, 1 500 ₪ le jeudi 22/10. Ensuite 3 000 ₪ le 12 de chaque mois.'],
-        ['Paiement à terme', '3 500 ₪ / mois', 'Payé au plus tard le dernier jour du mois.']
+        ['Démarrage complet', '3 000 ₪ / mois', 'Payé d\'avance. Virement aujourd\'hui, pendant notre rendez-vous, puis le 12 de chaque mois.'],
+        ['En deux fois', '1 500 + 1 500 ₪', '1 500 ₪ aujourd\'hui, pendant notre rendez-vous, et 1 500 ₪ le jeudi 22/10. Ensuite 3 000 ₪ le 12 de chaque mois.']
       ],
       always: 'Dans tous les cas : un plan de 4 mois est recommandé, et vous pouvez arrêter à la fin de chaque mois en prévenant 7 jours avant.'
     },
@@ -159,23 +158,22 @@ window.T = {
       rows: ['Formule', 'Démarrage', 'Paiement', 'Pub', 'Engagement'],
       start: 'Lundi 12/10/2026',
       pay: [
-        '3 000 ₪ par virement d\'ici dimanche 11/10, puis le 12 de chaque mois',
-        '1 500 ₪ ce soir ou dimanche, 1 500 ₪ le jeudi 22/10, puis 3 000 ₪ le 12 de chaque mois',
-        '3 500 ₪ par mois, au plus tard le dernier jour du mois'
+        '3 000 ₪ par virement aujourd\'hui, pendant le rendez-vous, puis le 12 de chaque mois',
+        '1 500 ₪ aujourd\'hui, pendant le rendez-vous, 1 500 ₪ le jeudi 22/10, puis 3 000 ₪ le 12 de chaque mois'
       ],
       ads: '≈ 3 000 ₪ par mois, payés par le restaurant aux plateformes',
       commit: '4 mois recommandés, sortie libre à la fin de chaque mois',
       go: 'On démarre',
       wa: 'Confirmer à David sur WhatsApp',
-      waText: 'Bonjour David, c\'est Uzi. Je confirme : formule « {opt} », démarrage lundi 12/10.',
+      waText: 'Bonjour David, c\'est Uzi. Je confirme : formule « {opt} », virement aujourd\'hui, démarrage lundi 12/10.',
       note: 'Un récapitulatif écrit vous sera envoyé ce soir.'
     },
     final: {
       title: 'C\'est parti.',
       sub: 'Les 7 prochains jours',
       steps: [
-        ['Ce soir', 'Récapitulatif écrit'],
-        ['Dim 11/10', 'Virement, accès aux comptes'],
+        ['Aujourd\'hui', 'Virement pendant le rendez-vous, récapitulatif écrit ce soir'],
+        ['Dim 11/10', 'Accès aux comptes'],
         ['Lun 12/10', 'Tournage 15:00–16:30'],
         ['Mar 13/10', 'Fiche Google, Google en ligne'],
         ['Mer 14/10', 'Pub Meta en ligne, Reel n° 1'],
@@ -320,9 +318,8 @@ window.T = {
       title: 'How would you like to start?',
       rec: 'Recommended',
       opts: [
-        ['Full start', '₪3,000 / month', 'Paid in advance. Transfer by Sunday 11 Oct, then on the 12th of each month.'],
-        ['In two parts', '₪1,500 + ₪1,500', '₪1,500 tonight or Sunday morning, ₪1,500 on Thursday 22 Oct. Then ₪3,000 on the 12th of each month.'],
-        ['Pay at month end', '₪3,500 / month', 'Paid by the last day of the month.']
+        ['Full start', '₪3,000 / month', 'Paid in advance. Bank transfer today, during our meeting, then on the 12th of each month.'],
+        ['In two parts', '₪1,500 + ₪1,500', '₪1,500 today, during our meeting, and ₪1,500 on Thursday 22 Oct. Then ₪3,000 on the 12th of each month.']
       ],
       always: 'Either way: a 4-month plan is recommended, and you can stop at the end of any month with 7 days\' notice.'
     },
@@ -345,23 +342,22 @@ window.T = {
       rows: ['Plan', 'Start', 'Payment', 'Ads', 'Commitment'],
       start: 'Monday 12 Oct 2026',
       pay: [
-        '₪3,000 by bank transfer by Sunday 11 Oct, then on the 12th of each month',
-        '₪1,500 tonight or Sunday, ₪1,500 on Thursday 22 Oct, then ₪3,000 on the 12th of each month',
-        '₪3,500 a month, by the last day of the month'
+        '₪3,000 by bank transfer today, during our meeting, then on the 12th of each month',
+        '₪1,500 today, during our meeting, ₪1,500 on Thursday 22 Oct, then ₪3,000 on the 12th of each month'
       ],
       ads: '≈ ₪3,000 a month, paid by the restaurant to the platforms',
       commit: '4 months recommended, free exit at the end of any month',
       go: 'Let\'s start',
       wa: 'Confirm to David on WhatsApp',
-      waText: 'Hi David, it\'s Uzi. I confirm: “{opt}” plan, starting Monday 12 Oct.',
+      waText: 'Hi David, it\'s Uzi. I confirm: “{opt}” plan, transfer today, starting Monday 12 Oct.',
       note: 'A written summary will be sent to you tonight.'
     },
     final: {
       title: 'Here we go.',
       sub: 'The next 7 days',
       steps: [
-        ['Tonight', 'Written summary'],
-        ['Sun 11 Oct', 'Transfer, account access'],
+        ['Today', 'Transfer during the meeting, written summary tonight'],
+        ['Sun 11 Oct', 'Account access'],
         ['Mon 12 Oct', 'Filming 15:00–16:30'],
         ['Tue 13 Oct', 'Google profile, Google ads live'],
         ['Wed 14 Oct', 'Meta ads live, Reel #1'],
@@ -506,9 +502,8 @@ window.T = {
       title: 'איך אתה רוצה להתחיל?',
       rec: 'מומלץ',
       opts: [
-        ['התחלה מלאה', '3,000 ₪ לחודש', 'בתשלום מראש. העברה עד יום ראשון 11.10, ואחר כך ב-12 בכל חודש.'],
-        ['בשני תשלומים', '1,500 + 1,500 ₪', '1,500 ₪ הערב או ביום ראשון בבוקר, ו-1,500 ₪ ביום חמישי 22.10. אחר כך 3,000 ₪ ב-12 בכל חודש.'],
-        ['תשלום בסוף החודש', '3,500 ₪ לחודש', 'משולם עד היום האחרון של החודש.']
+        ['התחלה מלאה', '3,000 ₪ לחודש', 'בתשלום מראש. העברה בנקאית היום, במהלך הפגישה שלנו, ואחר כך ב-12 בכל חודש.'],
+        ['בשני תשלומים', '1,500 + 1,500 ₪', '1,500 ₪ היום, במהלך הפגישה שלנו, ו-1,500 ₪ ביום חמישי 22.10. אחר כך 3,000 ₪ ב-12 בכל חודש.']
       ],
       always: 'בכל מקרה: מומלצת תוכנית של 4 חודשים, ואפשר לעצור בסוף כל חודש בהודעה של 7 ימים מראש.'
     },
@@ -531,23 +526,22 @@ window.T = {
       rows: ['המסלול', 'התחלה', 'תשלום', 'פרסום', 'התחייבות'],
       start: 'יום שני 12.10.2026',
       pay: [
-        '3,000 ₪ בהעברה בנקאית עד יום ראשון 11.10, ואחר כך ב-12 בכל חודש',
-        '1,500 ₪ הערב או ביום ראשון, 1,500 ₪ ביום חמישי 22.10, ואחר כך 3,000 ₪ ב-12 בכל חודש',
-        '3,500 ₪ לחודש, עד היום האחרון של החודש'
+        '3,000 ₪ בהעברה בנקאית היום, במהלך הפגישה, ואחר כך ב-12 בכל חודש',
+        '1,500 ₪ היום, במהלך הפגישה, 1,500 ₪ ביום חמישי 22.10, ואחר כך 3,000 ₪ ב-12 בכל חודש'
       ],
       ads: 'כ-3,000 ₪ לחודש, משולם על ידי המסעדה לפלטפורמות',
       commit: 'מומלצים 4 חודשים, יציאה חופשית בסוף כל חודש',
       go: 'מתחילים',
       wa: 'לאשר לדוד בוואטסאפ',
-      waText: 'שלום דוד, כאן עוזי. אני מאשר: מסלול „{opt}“, התחלה ביום שני 12.10.',
+      waText: 'שלום דוד, כאן עוזי. אני מאשר: מסלול „{opt}“, העברה היום, התחלה ביום שני 12.10.',
       note: 'סיכום כתוב יישלח אליך הערב.'
     },
     final: {
       title: 'יוצאים לדרך.',
       sub: '7 הימים הקרובים',
       steps: [
-        ['הערב', 'סיכום כתוב'],
-        ['א׳ 11.10', 'העברה, גישה לחשבונות'],
+        ['היום', 'העברה במהלך הפגישה, סיכום כתוב בערב'],
+        ['א׳ 11.10', 'גישה לחשבונות'],
         ['ב׳ 12.10', 'צילומים 15:00–16:30'],
         ['ג׳ 13.10', 'פרופיל גוגל, קמפיין גוגל באוויר'],
         ['ד׳ 14.10', 'פרסום ב-Meta באוויר, רילס מס׳ 1'],

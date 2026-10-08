@@ -19,6 +19,7 @@
     <div class="langs" role="group" id="langs">
       <button data-lang="fr">FR</button><button data-lang="en">EN</button><button data-lang="he">עב</button>
     </div>
+    <span class="np" id="np" aria-live="polite"></span>
     <button class="snd" id="snd" aria-pressed="false" title="Son">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path class="w1" d="M16 9a4 4 0 0 1 0 6" /><path class="w2" d="M18.5 6.5a7.5 7.5 0 0 1 0 11" /><path class="x" d="M16 9l6 6M22 9l-6 6"/></svg>
     </button>
@@ -49,7 +50,7 @@
   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
 </button>
 <canvas id="confetti" aria-hidden="true"></canvas>
-<audio id="music" src="media/music.mp3" loop preload="none"></audio>
+<audio id="music" loop preload="auto"></audio>
 
 <script src="i18n.js"></script>
 <script src="app.js"></script>
